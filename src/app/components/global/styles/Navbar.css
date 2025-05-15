@@ -81,14 +81,7 @@
     height: 40px;
     width: 40px;
   }
-  .stickdiv .right-content .font-bold,
-  .stickdiv .right-content .text-sm,
-  .stickdiv .institute-info {
-    font-size: 0.675rem;
-    align-items: center;
-    text-align: center;
-    padding-top: 0px;
-  }
+
   .stickdiv .header-top {
     padding: 2px 16px;
   }
@@ -186,7 +179,7 @@
     justify-content: space-between;
     max-width: 80rem;
     padding-left: 1rem;
-    padding-right: 1rem;
+    padding-right: 0rem;
     font-size: 0.875rem;
     line-height: 1.25rem;
   }

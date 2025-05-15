@@ -30,35 +30,35 @@ const Popbuttons = () => {
           <FontAwesomeIcon icon={faGraduationCap} size="4x" className="mobileicondiv" color='#BA210E' />
           <p className="headingp12 headingp1">ALUMNI</p>
         </a>
-      <a href ="/Academic/Admission?tab=JoSAA" className="card card1">
+      <a href ="/Academic/NITPAdmission" className="card card1">
         <FontAwesomeIcon icon={faSchool} size="4x" className="mobileicondiv" color='#f7cece' />
         <p className="headingp">ADMISSIONS</p>
       </a>
       
-      <Link href="/Institute/Magazine" className="card">
+      {/* <Link href="/Institute/Magazine" className="card">
       <FontAwesomeIcon icon={faBookOpen} size="4x" className="mobileicondiv" color='#BA210E' />
       <p className="headingp">MAGAZINE</p>
-      </Link>
-      
+      </Link> */}
+       <a href="https://tnp.nitp.ac.in/" className="card card1" target="_blank" >
+        <FontAwesomeIcon icon={faBuilding} size="3x" className="mobileicondiv" color='#f7cece'/>
+        <p className="headingp headingp1 headingp1t">TRAINING AND PLACEMENT</p>
+      </a>
       <Link href="/Notices/JobsNITP" className="card">
         <FontAwesomeIcon icon={faBolt} size="4x" className="mobileicondiv" color='#BA210E' />
         <p className="headingp">RECRUITMENT</p>
       </Link>
       
-      <Link href ="/Academic/Faculty&Staff" className="card card1">
+      {/* <Link href ="/Academic/Faculty&Staff" className="card card1">
       <FontAwesomeIcon icon={faUsers} size="3x" className="mobileicondiv" color='#f7cece' />
       <p className="headingp headingp1f ">FACULTY & STAFF</p>
-      </Link>
+      </Link> */}
       
       <a href="/Institute/International" className="card">
       <FontAwesomeIcon icon={faPlaneDeparture} size="4x" className="mobileicondiv" color='#BA210E' />
       <p className="headingp ">International Affairs</p>
       </a>
-      {/* <a href="https://tpc.nitp.ac.in/" className="card card1" target="_blank" >
-        <FontAwesomeIcon icon={faBuilding} size="3x" className="mobileicondiv" color='#f7cece'/>
-        <p className="headingp headingp1 headingp1t">TRAINING AND PLACEMENT</p>
-      </a> */}
-      <a href="https://nitp-ict.ct.ws" className="card card1" target="_blank" >
+     
+      <a href="https://eict.nitp.ac.in/" className="card card1" target="_blank" >
         <FontAwesomeIcon icon={faBuilding} size="3x" className="mobileicondiv" color='#f7cece'/>
         <p className="headingp headingp1 headingp1t">Electronics & ICT Academy</p>
       </a>

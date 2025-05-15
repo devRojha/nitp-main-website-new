@@ -19,31 +19,31 @@ const ProjectCard = ({
   // console.log("ProjectCard Props:", project_title, facultyName, sponsor, amount, start, end);
 
   return (
-    <div className="bg-white border border-gray-200 p-4 mb-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
+    <div className="bg-white border border-gray-200 p-3 mb-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-300">
       <div className="flex items-center">
-        <h3 className="text-base font-semibold text-purple-700">
+        <h3 className="text-sm font-semibold text-[#7a2020]">
           {project_title}
         </h3>
       </div>
-      <ul className="text-sm text-gray-700 mt-2 space-y-2">
+      <ul className="text-xs text-gray-700 mt-1.5 space-y-1">
         {facultyName && (
           <li>
-            <strong className="text-gray-900">Faculty:</strong> {facultyName}
+            <strong className="text-[#421010]">Faculty:</strong> {facultyName}
           </li>
         )}
         {sponsor && (
           <li>
-            <strong className="text-gray-900">Sponsor:</strong> {sponsor}
+            <strong className="text-[#421010]">Sponsor:</strong> {sponsor}
           </li>
         )}
         {amount && (
           <li>
-            <strong className="text-gray-900">Amount:</strong> {amount}
+            <strong className="text-[#421010]">Amount:</strong> {amount}
           </li>
         )}
         {start && end && (
           <li>
-            <strong className="text-gray-900">Duration:</strong> {start} - {end}
+            <strong className="text-[#421010]">Duration:</strong> {start} - {end}
           </li>
         )}
       </ul>
@@ -61,23 +61,23 @@ const PublicationCard = ({
   volume,
 }) => {
   return (
-    <div className="p-4 border border-gray-300 bg-white rounded-lg shadow-md hover:shadow-lg transition-transform duration-300">
-      <p className="text-gray-800 text-base">
-        {authors && <span className="font-semibold">{authors}</span>},{" "}
+    <div className="p-3 border border-gray-200 bg-white rounded-lg shadow-md hover:shadow-lg transition-transform duration-300">
+      <p className="text-xs text-gray-800">
+        {authors && <span className="font-semibold text-[#421010]">{authors}</span>},{" "}
         {title && (
-          <span className="font-semibold text-blue-700">"{title}"</span>
+          <span className="font-semibold text-[#220909]">"{title}"</span>
         )}
         ,{" "}
         {journalName && (
-          <span className="text-gray-700 text-lg font-semibold">
+          <span className="text-[#7a2020] font-semibold">
             {journalName}
           </span>
         )}{" "}
         {journalQuartile && (
-          <span className="text-gray-700">({journalQuartile})</span>
+          <span className="text-gray-600">({journalQuartile})</span>
         )}{" "}
-        {volume && <span className="text-gray-700">Volume: {volume} </span>}{" "}
-        {year && <span className="text-gray-700">Year: {year}</span>}
+        {volume && <span className="text-gray-600">Volume: {volume} </span>}{" "}
+        {year && <span className="text-gray-600">Year: {year}</span>}
       </p>
     </div>
   );
@@ -168,7 +168,28 @@ export default function Research() {
             paper.journal_quartile === "Q1" &&
             (paper.publication_year === 2024 || paper.publication_year === 2025)
         );
-        setRecentPublications(publications);
+        
+        const quartileOrder = {
+          Q1: 1,
+          Q2: 2,
+          Q3: 3,
+          Q4: 4,
+          Q5: 5
+        };
+        
+        const sortedPublications = publications.sort((a, b) => {
+          const quartileA = quartileOrder[a.journal_quartile.toUpperCase()] || 6;
+          const quartileB = quartileOrder[b.journal_quartile.toUpperCase()] || 6;
+        
+          if (quartileA !== quartileB) {
+            return quartileA - quartileB;
+          }
+        
+          return b.publication_year - a.publication_year;
+        });
+        
+        setRecentPublications(sortedPublications);
+        
       } catch (error) {
         console.error("Error fetching recent publications:", error);
       }
@@ -184,7 +205,22 @@ export default function Research() {
           `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/project?type=all`
         );
         const projects = await projectResponse.json();
-        setRecentProjects(projects);
+        const sortedProjects = projects.sort((a, b) => {
+          const dateA = new Date(a.start_date);
+          const dateB = new Date(b.start_date);
+        
+          if (dateA.getTime() !== dateB.getTime()) {
+            return dateB.getTime() - dateA.getTime();
+          }
+        
+          const fundsA = parseFloat(a.financial_outlay || "0");
+          const fundsB = parseFloat(b.financial_outlay || "0");
+        
+          return fundsB - fundsA;
+        });
+        
+        setRecentProjects(sortedProjects);
+        
       } catch (error) {
         console.error("Error fetching recent projects or journals:", error);
       }
@@ -200,7 +236,7 @@ export default function Research() {
       className="Researchdiv"
     >
       <div className="w-full px-4 py-8 md:px-6 md:py-4 bg-transparent">
-        <div className="flex text-center items-center justify-center mb-8 py-6">
+        <div className="flex text-center items-center justify-center py-6">
           <div className="w-full h-0.5 mr-4 bg-[#a51818] " />
           <svg
             className="text-primary mr-5"
@@ -278,59 +314,59 @@ export default function Research() {
           <div className="w-full h-0.5 bg-[#a51818] ml-4" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-card rounded-lg p-4 flex flex-col items-center justify-center border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 md:p-6">
-            <ActivityIcon className="w-6 h-6 text-primary md:w-8 md:h-8" />
-            <h3 className="text-sm font-medium mt-2 text-primary md:text-lg">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6">
+          <div className="bg-white rounded-lg p-3 flex flex-col items-center justify-center border border-[#421010] shadow-md hover:shadow-lg transition-shadow duration-300">
+            <ActivityIcon className="w-5 h-5 text-[#421010]" />
+            <h3 className="text-xs font-medium mt-1.5 text-[#421010]">
               Patents
             </h3>
-            <span className="text-2xl font-bold text-primary md:text-4xl">
+            <span className="text-lg font-bold text-[#421010] md:text-xl">
               {counterOn && (
                 <CountUp end={data.patentCount} duration={5} delay={1} />
               )}
             </span>
           </div>
 
-          <div className="bg-card rounded-lg p-4 flex flex-col items-center justify-center border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 md:p-6">
-            <ClipboardIcon className="w-6 h-6 text-primary md:w-8 md:h-8" />
-            <h3 className="text-sm font-medium mt-2 text-primary md:text-lg">
+          <div className="bg-white rounded-lg p-3 flex flex-col items-center justify-center border border-[#421010] shadow-md hover:shadow-lg transition-shadow duration-300">
+            <ClipboardIcon className="w-5 h-5 text-[#421010]" />
+            <h3 className="text-xs font-medium mt-1.5 text-[#421010]">
               Books
             </h3>
-            <span className="text-2xl font-bold text-primary md:text-4xl">
+            <span className="text-lg font-bold text-[#421010] md:text-xl">
               {counterOn && <CountUp end={data.books} duration={5} delay={1} />}
             </span>
           </div>
 
-          <div className="bg-card rounded-lg p-4 flex flex-col items-center justify-center border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 md:p-6">
-            <BriefcaseIcon className="w-6 h-6 text-primary md:w-8 md:h-8" />
-            <h3 className="text-sm font-medium mt-2 text-primary md:text-lg">
+          <div className="bg-white rounded-lg p-3 flex flex-col items-center justify-center border border-[#421010] shadow-md hover:shadow-lg transition-shadow duration-300">
+            <BriefcaseIcon className="w-5 h-5 text-[#421010]" />
+            <h3 className="text-xs font-medium mt-1.5 text-[#421010]">
               Projects
             </h3>
-            <span className="text-2xl font-bold text-primary md:text-4xl">
+            <span className="text-lg font-bold text-[#421010] md:text-xl">
               {counterOn && (
                 <CountUp end={data.projectCount} duration={5} delay={1} />
               )}
             </span>
           </div>
 
-          <div className="bg-card rounded-lg p-4 flex flex-col items-center justify-center border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 md:p-6">
-            <UsersIcon className="w-6 h-6 text-primary md:w-8 md:h-8" />
-            <h3 className="text-sm font-medium mt-2 text-primary md:text-lg">
+          <div className="bg-white rounded-lg p-3 flex flex-col items-center justify-center border border-[#421010] shadow-md hover:shadow-lg transition-shadow duration-300">
+            <UsersIcon className="w-5 h-5 text-[#421010]" />
+            <h3 className="text-xs font-medium mt-1.5 text-[#421010]">
               Article
             </h3>
-            <span className="text-2xl font-bold text-primary md:text-4xl">
+            <span className="text-lg font-bold text-[#421010] md:text-xl">
               {counterOn && (
                 <CountUp start={0} end={data.articles} duration={5} delay={1} />
               )}
             </span>
           </div>
 
-          <div className="bg-card rounded-lg p-4 flex flex-col items-center justify-center border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 md:p-6">
-            <CpuIcon className="w-6 h-6 text-primary md:w-8 md:h-8" />
-            <h3 className="text-sm font-medium mt-2 text-primary md:text-lg">
+          <div className="bg-white rounded-lg p-3 flex flex-col items-center justify-center border border-[#421010] shadow-md hover:shadow-lg transition-shadow duration-300">
+            <CpuIcon className="w-5 h-5 text-[#421010]" />
+            <h3 className="text-xs font-medium mt-1.5 text-[#421010]">
               Conference
             </h3>
-            <span className="text-2xl font-bold text-primary md:text-4xl">
+            <span className="text-lg font-bold text-[#421010] md:text-xl">
               {counterOn && (
                 <CountUp
                   start={0}
@@ -343,17 +379,17 @@ export default function Research() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 container1p">
-          <div className="border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg sectionp">
-            <div className="flex items-center mb-4 p-7 section-headerp">
-              <div className="w-8 h-0.5 bg-primary mr-4 py-6" />
-              <h3 className="text-base md:text-lg font-medium text-primary text-red-800">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
+          <div className="w-full border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg">
+            <div className="flex items-center justify-center mb-4 p-3 md:p-5 section-headerp">
+              <div className="flex-1 h-0.5 bg-[#421010]" />
+              <h3 className="mx-4 text-sm md:text-base font-medium text-[#421010] whitespace-nowrap">
                 Recent Publication
               </h3>
-              <div className="w-8 h-0.5 bg-primary ml-4" />
+              <div className="flex-1 h-0.5 bg-[#421010]" />
             </div>
 
-            <div className="p-4 h-4/5 overflow-hidden relative">
+            <div className="p-4 h-[500px] overflow-hidden relative">
               {recentPublications.length === 0 ? (
                 <div className="text-sm md:text-base flex justify-center items-center h-52">
                   <svg
@@ -490,15 +526,15 @@ export default function Research() {
             </div>
           </div>
 
-          <div className="border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg sectionp">
-            <div className="flex items-center mb-4 p-7 section-headerp">
-              <div className="w-auto h-0.5 bg-primary mr-4 py-6" />
-              <h3 className="text-base md:text-lg font-medium text-primary text-red-800">
+          <div className="w-full border border-primary shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg">
+            <div className="flex items-center justify-center mb-4 p-3 md:p-5 section-headerp">
+              <div className="flex-1 h-0.5 bg-[#421010]" />
+              <h3 className="mx-4 text-sm md:text-base font-medium text-[#421010] whitespace-nowrap">
                 Recent Projects
               </h3>
-              <div className="w-auto h-0.5 bg-primary ml-4" />
+              <div className="flex-1 h-0.5 bg-[#421010]" />
             </div>
-            <div className="p-4 h-4/5 overflow-hidden relative">
+            <div className="p-4 h-[500px] overflow-hidden relative">
               {recentProjects.length === 0 ? (
                 <div className="flex justify-center items-center h-52 ">
                   <svg

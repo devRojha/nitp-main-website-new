@@ -64,46 +64,89 @@ const Gallery = () => {
   }, []);
 
   return (
-    <div className=" flex-col md:flex-row h-full gdiv grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 md:p-6">
-      
-      <div >
-        <h2 className="text-xl font-bold mb-4 text-center text-black">Glimpse of NIT Patna</h2>
-        <div className="image-grid grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 p-4 md:p-6">
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="relative overflow-hidden rounded-lg group aspect-[4/3] image-item"
-            >
-              <img
-                src={image}
-                alt={`Gallery Image ${index + 1}`}
-                className="object-cover w-full h-full transition-all duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button onClick={() => openPopup(index)} className="text-white font-medium w-4/5 h-4/5">
-                  View Image
-                </button>
-              </div>
+    <div className="mx-auto px-4 py-8">
+      <h2 className="text-2xl font-bold mb-8 text-center text-black">Glimpse of NIT Patna</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {images.map((image, index) => (
+          <div
+            key={index}
+            className="relative overflow-hidden rounded-lg group aspect-[4/3] shadow-md hover:shadow-xl transition-shadow"
+          >
+            <img
+              src={image}
+              alt={`Gallery Image ${index + 1}`}
+              className="object-cover w-full h-full transition-all duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <button 
+                onClick={() => openPopup(index)} 
+                className="text-white font-medium px-6 py-2 rounded-lg bg-[#421010]/80 hover:bg-[#421010] transition-colors"
+              >
+                View Image
+              </button>
             </div>
-          ))}
-          
-        </div>
+          </div>
+        ))}
       </div>
+
       {popupImage && (
         <>
-          <div className="overlay-background" onClick={closePopup}></div>
-          <div className="popup">
-            <button className="close-button text-black"  onClick={closePopup}>
-              ✖
-            </button>
-            <img src={popupImage} alt="Popup Image" />
-            <div className="navigation-buttons text-black">
-              <button className="prev-button" onClick={showPreviousImage}>
-                ←
+          <div className="fixed inset-0 bg-black/80 z-[60000]" onClick={closePopup}></div>
+          <div className="fixed inset-0 z-[70000] flex items-center justify-center p-4">
+            <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-[95vw] md:max-w-[85vw] lg:max-w-[1200px] mx-auto max-h-[90vh] flex flex-col">
+              <button 
+                className="absolute right-4 top-4 text-gray-600 hover:text-gray-800 z-[80] bg-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all hover:shadow-xl"
+                onClick={closePopup}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
-              <button className="next-button" onClick={showNextImage}>
-                →
-              </button>
+              <div className="relative flex-1 min-h-0 flex items-center justify-center p-4">
+                <img 
+                  src={popupImage} 
+                  alt="Popup Image" 
+                  className="w-auto h-auto max-w-full max-h-[65vh] object-contain mx-auto"
+                />
+                <button 
+                  className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-800 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-lg transition-all hover:shadow-xl"
+                  onClick={showPreviousImage}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button 
+                  className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-100 text-gray-800 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-lg transition-all hover:shadow-xl"
+                  onClick={showNextImage}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+              <div className="bg-gray-100 p-2 md:p-4 rounded-b-lg">
+                <div className="flex gap-2 overflow-x-auto py-2 px-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
+                  {images.map((thumb, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setPopupImage(images[idx]);
+                        setCurrentIndex(idx);
+                      }}
+                      className={`flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-lg overflow-hidden transition-all hover:opacity-90 ${
+                        currentIndex === idx ? 'ring-2 ring-[#421010] ring-offset-2' : ''
+                      }`}
+                    >
+                      <img
+                        src={thumb}
+                        alt={`Thumbnail ${idx + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </>

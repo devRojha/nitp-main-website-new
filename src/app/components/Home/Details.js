@@ -7,6 +7,8 @@ import "./styles/Details.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { FiDownload } from 'react-icons/fi';
+import { Calendar, MapPin, Download, ExternalLink, Info, BellRing, AlertOctagon, CircleDot, Star } from 'lucide-react';
+
 
 // FormatDate component
 const FormatDate = ({ time }) => {
@@ -21,52 +23,61 @@ const FormatDate = ({ time }) => {
 
 // Noticecard Component
 const Noticecard = ({ detail, time, attachments, imp, link }) => (
-  <div className={`notice ${imp ? "important" : ""}`}>
-    <h3>{detail}</h3>
-    <p>
-      <span className="text-neutral-400 text-xs">
-        <FormatDate time={time} />
-      </span>
-    </p>
-    {Array.isArray(attachments) && attachments.length > 0 && (
-      <ul className="text-xs text-red-800">
-        {attachments.map((attachment, index) => (
-          <li key={index} className="mb-1">
-            {attachment.typeLink ? (
-              <a 
-                href={attachment.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2"
-              >
-                <FiDownload className="inline-block" />
-                {attachment.caption || "View Notice"}
-              </a>
-            ) : (
-              <a 
-                href={attachment.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2"
-              >
-                <FiDownload className="inline-block" />
-                {attachment.caption || "View Notice"}
-              </a>
-            )}
-          </li>
-        ))}
-      </ul>
+  <div className="notice flex items-start gap-2 bg-transparent hover:bg-purple-50 rounded-md py-3 px-2 mr-2">
+    {imp && (
+      <Star className="h-3 w-3 mt-[6px] flex-shrink-0 text-yellow-500 fill-yellow-500" />
     )}
-    {link && (
-      <a 
-        href={link} 
-        target="_blank" 
-        rel="noopener noreferrer"
-        className="text-xs text-blue-600 hover:text-blue-800"
-      >
-        View Notice
-      </a>
-    )}
+    <div className="flex-1">
+      <h3>{detail}</h3>
+      <p>
+        <span className="text-neutral-400 text-xs">
+          <FormatDate time={time} />
+        </span>
+      </p>
+      {Array.isArray(attachments) && attachments.length > 0 && (
+        <ul className="text-xs">
+          {attachments.map((attachment, index) => (
+            <li key={index} className="mb-1">
+              {attachment.typeLink ? (
+                <a
+                  href={attachment.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-red-800 hover:text-red-900"
+                >
+                  <FiDownload className="inline-block text-red-800 hover:text-red-900" />
+                  <span className="text-red-800 hover:text-red-900">
+                    {attachment.caption || "View Notice"}
+                  </span>
+                </a>
+              ) : (
+                <a
+                  href={attachment.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-red-800 hover:text-red-900"
+                >
+                  <FiDownload className="inline-block text-red-800 hover:text-red-900" />
+                  <span className="text-red-800 hover:text-red-900">
+                    {attachment.caption || "View Notice"}
+                  </span>
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+      {link && (
+        <a
+          href={link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-red-800 hover:text-red-900"
+        >
+          <span className="text-red-800 hover:text-red-900">View Notice</span>
+        </a>
+      )}
+    </div>
   </div>
 );
 
@@ -77,68 +88,83 @@ const Eventcard = ({
   attachments,
   location,
   event_link,
-  link,
+  doclink,
 }) => {
   // Helper function to safely parse JSON
   const safeParseJSON = (data, fallback) => {
     try {
-      return JSON.parse(data);
+      const parsed = JSON.parse(data);
+      return parsed;
     } catch (e) {
       return fallback;
     }
   };
 
-  // Parse attachments if it's a string
-  const parsedAttachments =
-    typeof attachments === "string"
-      ? safeParseJSON(attachments, [])
-      : attachments;
+  // Parse attachments from JSON string
+  const parsedAttachments = typeof attachments === "string"
+    ? safeParseJSON(attachments, [])
+    : [];
 
-  // Parse event_link if it's a string and formatted as JSON
-  const parsedEventLink =
-    typeof event_link === "string" && event_link.startsWith("{")
-      ? safeParseJSON(event_link, null)
-      : { url: event_link };
+  // Parse event_link if it exists
+  const parsedEventLink = event_link
+    ? safeParseJSON(event_link, null)
+    : null;
 
   return (
-    <div className="eventcard">
-      <h3>{detail}</h3>
-      <p>{time}</p>
-      <p className="text-opacity-25">Location: {location}</p>
+    <div className="group/item rounded-lg p-3 transition-all hover:bg-purple-50">
+      <p className="mb-3 text-sm text-gray-700">{detail}</p>
+      <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
+        <Calendar className="h-4 w-4" />
+        <span>{time}</span>
+      </div>
+      <div className="mb-3 flex items-center gap-2 text-sm text-gray-500">
+        <MapPin className="h-4 w-4" />
+        <span>{location}</span>
+      </div>
 
-      {/* {
-        console.log(parsedAttachments,'is parsed attachemnents')
-      } */}
-
+      {/* Display attachments */}
       {parsedAttachments && parsedAttachments.length > 0 && (
-        <ul>
-          <li>
-            {parsedAttachments[0].typeLink ? (
-              <a
-                href={parsedAttachments[0].url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div className="download-icon inline-block"></div>
-                {parsedAttachments[0].caption || "Download"}
-              </a>
-            ) : (
-              <a href={parsedAttachments[0].url} download>
-                <div className="download-icon inline-block"></div>
-                {parsedAttachments[0].caption || "Download"}
-              </a>
-            )}
-          </li>
-        </ul>
+        <div className="flex flex-col gap-2 mb-3">
+          {parsedAttachments.map((attachment, index) => (
+            <a
+              key={index}
+              href={attachment.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
+            >
+              <Download className="h-4 w-4" />
+              {attachment.caption || "Event Attachment"}
+            </a>
+          ))}
+        </div>
       )}
 
-      {parsedEventLink?.url && (
-        <a href={parsedEventLink.url} target="_blank" rel="noopener noreferrer">
-          Event link
-        </a>
-      )}
-
-      {link && <a href={link}>Read more</a>}
+      {/* Display links in flex-col to ensure vertical layout */}
+      <div className="flex flex-col gap-2">
+        {doclink && (
+          <a
+            href={doclink.trim()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Event Registration
+          </a>
+        )}
+        {parsedEventLink?.url && (
+          <a
+            href={parsedEventLink.url.trim()}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700"
+          >
+            <ExternalLink className="h-4 w-4" />
+            Event Link
+          </a>
+        )}
+      </div>
     </div>
   );
 };
@@ -161,7 +187,7 @@ const Details = () => {
 
     const fetchEvents = async () => {
       try {
-        const eventsUrl = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/events/active`;
+        const eventsUrl = `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/events?type=active`;
         // console.log(eventsUrl);
         const response = await axios.get(eventsUrl);
         // Filter the events to include only those with type "general"
@@ -312,7 +338,7 @@ const Details = () => {
           <Link href="/Notices/All">View all</Link>
         </div>
         <div
-          className="section-content text-red-950"
+          className="section-content text-red-950 scrollbar-hide"
           ref={noticesRef}
           onMouseEnter={handleMouseEnterNotices}
           onMouseLeave={handleMouseLeaveNotices}
@@ -355,14 +381,14 @@ const Details = () => {
         </div>
       </div>
 
-      <div className="section1">
+      <div className="section">
         <div>
           <div className="section-header">
             <h2>Events</h2>
             <Link href="/Notices/Events">View all</Link>
           </div>
           <div
-            className="section-content text-red-950"
+            className="section-content text-red-950 scrollbar-hide"
             ref={eventsRef}
             onMouseEnter={handleMouseEnterEvents}
             onMouseLeave={handleMouseLeaveEvents}
@@ -389,11 +415,9 @@ const Details = () => {
               </div>
             ) : (
               events
-                .filter((event) => {
-                  const endDate = new Date(event.eventEndDate);
-                  const today = new Date();
-                  today.setHours(0, 0, 0, 0); 
-                  return endDate >= today; 
+                .sort((a, b) => {
+                  // Sort by updatedAt in descending order (most recent first)
+                  return new Date(b.updatedAt) - new Date(a.updatedAt);
                 })
                 .map((event, index) => {
                   const startDate = new Date(event.eventStartDate);
@@ -411,17 +435,9 @@ const Details = () => {
                       detail={event.title}
                       time={`${dayStart}-${monthStart}-${yearStart} - ${dayEnd}-${monthEnd}-${yearEnd}`}
                       attachments={event.attachments}
-                      location={event.venue.substring(0, 60)}
-                      event_link={
-                        (event.event_link &&
-                          JSON.parse(event.event_link).url) ||
-                        ""
-                      }
-                      link={
-                        event.attachments.length !== 0
-                          ? event.attachments[0].url
-                          : ""
-                      }
+                      location={event.venue}
+                      event_link={event.event_link}
+                      doclink={event.doclink}
                     />
                   );
                 })
@@ -436,7 +452,7 @@ const Details = () => {
           <Link href="/Notices/Academic">View all</Link>
         </div>
         <div
-          className="section-content text-red-950"
+          className="section-content text-red-950 scrollbar-hide"
           ref={academicsRef}
           onMouseEnter={handleMouseEnterAcademics}
           onMouseLeave={handleMouseLeaveAcademics}

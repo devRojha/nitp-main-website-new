@@ -28,8 +28,8 @@ const ImageSlider = () => {
       <div className="slider mx-auto">
         <img src={sliderData[currentIndex].image} alt={`Slide ${currentIndex + 1}`} />
         <div className="text-overlay">
-          <h2 className='text-2xl pt-4 text-red-800 font-extrabold'>{sliderData[currentIndex].heading}</h2>
-          <p className='text-sm md:text-lg pt-5 md:pt-8 text-neutral-700'>{sliderData[currentIndex].description}</p>
+          <h2 className="text-2xl pt-4 text-red-800 font-extrabold">{sliderData[currentIndex].heading}</h2>
+          <p className="text-sm md:text-lg pt-5 md:pt-8 text-neutral-700">{sliderData[currentIndex].description}</p>
         </div>
       </div>
 

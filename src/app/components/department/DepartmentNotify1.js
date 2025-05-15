@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 function DepartmentNotify1(props) {
-    const link = props.link ? JSON.parse(props.link).url : '';
+    const link = props.link ? JSON.parse(props.link).url : props.attachments?.[0]?.url || "";
     const color = ["yellow-700", "black"];
     const [textCol, settextCol] = useState("black");
     let flag = 0;
@@ -18,7 +18,7 @@ function DepartmentNotify1(props) {
     if (link && link.length > 5) {
         return (
             <div>
-                <a href={link} className={`${(props.important === 1) ? `text-${textCol}` : ""} my-1 font-semibold text-[14px] flex text-start hover:text-blue-500`}>
+                <a href={link} className={`${(props.important === 1) ? `text-${textCol}` : ""} my-1 font-semibold text-[14px] flex text-start hover:text-blue-700`}>
                     <div className="flex items-center">
                         <div className="border rounded-full bg-black h-[10px] w-[10px] mr-2"></div>
                         {props.title}
